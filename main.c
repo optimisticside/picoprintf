@@ -5,7 +5,7 @@
  * Provide putchar function that
  * is used internally by printf.
  */
-int putchar(char c) {
+int putchar(int c) {
 	write(1, &c, 1);
 }
 
