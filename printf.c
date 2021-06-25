@@ -3,7 +3,7 @@
 
 #define PRINT_BUF_MAX	40
 
-int putchar(char);
+int putchar(int);
 
 void printc(char *buf, size_t lim, size_t *pos, char c) {
 	if (*pos < lim - 1)
