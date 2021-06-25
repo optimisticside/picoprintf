@@ -78,6 +78,8 @@ size_t vsnprintf(char *buf, size_t lim, const char *fmt, va_list args) {
 		case '%':
 			printc(buf, lim, &pos, '%');
 			break;
+		case '\0':
+			goto out;
 		default:
 			printc(buf, lim, &pos, '%');
 			printc(buf, lim, &pos, c);
