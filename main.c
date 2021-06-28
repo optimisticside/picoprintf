@@ -10,13 +10,16 @@ int putchar(int c) {
 }
 
 int main(int argc, char *argv[]) {
-	printf("Hello, World!\n");
-	printf("Hello from %c.\n", 'C');
-	printf("2 + 2 is %d.\n", 2 + 2);
-	printf("My args are at %p.\n", (void *)argv);
+	printf("Hello\n");
+	printf("W%crld!\n", 'o');
+	printf("Hello %s!\n", "World");
+	printf("I am %d years old.\n", -15);
+	printf("My args are at %p\n", (void *)argv);
+	printf("This is my %luth sentence.\n", (size_t)6);
 	
 	char buf[30];
-	sprintf(buf, "Hello from %s.\n", "sprintf");
+	sprintf(buf, "Hello from line %d!\n", 17);
 	printf(buf);
+
 	return 0;
 }
