@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 	printf("This is my %luth sentence.\n", (size_t)6);
 	
 	char buf[30];
-	sprintf(buf, "Hello from line %d!\n", 17);
+	sprintf(buf, "Hello from line %d!\n", __LINE__);
 	printf(buf);
 
 	return 0;
