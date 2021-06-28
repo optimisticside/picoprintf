@@ -5,7 +5,7 @@
 
 int putchar(int);
 
-void printc(char *buf, size_t lim, size_t *pos, char c) {
+void printc(char *buf, size_t lim, size_t *pos, int c) {
 	if (*pos < lim - 1)
 	    buf[(*pos)++] = c;
 	buf[*pos] = '\0';
@@ -45,9 +45,8 @@ size_t vsnprintf(char *buf, size_t lim, const char *fmt, va_list args) {
 
 	for (;;) {
 		int wide = 0;
-		char c;
 		char *digits = lower_chars;
-		int n;
+		int n, c;
 		unsigned int u;
 
 		while ((c = *fmt++) != '%') {
