@@ -20,35 +20,49 @@ void prints(char *buf, size_t lim, size_t *pos, char *str) {
 	buf[*pos] = '\0';
 }
 
-void printu(char *buf, size_t lim, size_t *pos, size_t base, unsigned long num) {
-	static char *base_chars = "0123456789ABCDEF";
+void printu(char *buf, size_t lim, size_t *pos, char *chars,
+	    size_t base, unsigned long num) {
 	unsigned long fac = num / base;
 
 	if (fac != 0)
-		printu(buf, lim, pos, base, fac);
-	printc(buf, lim, pos, base_chars[num%base]);
+		printu(buf, lim, pos, chars, base, fac);
+	printc(buf, lim, pos, chars[num%base]);
 }
 
-void printn(char *buf, size_t lim, size_t *pos, size_t base, long num) {
+void printn(char *buf, size_t lim, size_t *pos, char *chars,
+	    size_t base, long num) {
 	if (num < 0) {
 		num = -num;
 		printc(buf, lim, pos, '-');
 	}
-	printu(buf, lim, pos, base, (unsigned long)num);
+	printu(buf, lim, pos, chars, base, (unsigned long)num);
 }
 
 size_t vsnprintf(char *buf, size_t lim, const char *fmt, va_list args) {
+	static char *lower_chars = "0123456789abcdef";
+	static char *upper_chars = "0123456789ABCDEF";
 	size_t pos = 0;
 
 	for (;;) {
+		int wide = 0;
 		char c;
+		char *digits = lower_chars;
+		int n;
+		unsigned int u;
+
 		while ((c = *fmt++) != '%') {
 			if (c == '\0')
 				goto out;
 			printc(buf, lim, &pos, c);
 		}
 
-		c = *fmt++;
+		if ((c = *fmt++) == 'l') {
+			wide = 1;
+			c = *fmt++;
+		}
+		if (c == 'X' || c == 'P')
+			digits = upper_chars;
+
 		switch (c) {
 		case 'c':
 			printc(buf, lim, &pos, (char)va_arg(args, int));
@@ -58,22 +72,28 @@ size_t vsnprintf(char *buf, size_t lim, const char *fmt, va_list args) {
 			break;
 		case 'i':
 		case 'd':
-			printn(buf, lim, &pos, 10, (long)va_arg(args, int));
+			n = wide ? va_arg(args, long) : (long)va_arg(args, int);
+			printn(buf, lim, &pos, digits, 10, n);
 			break;
+		case 'P':
 		case 'p':
 			prints(buf, lim, &pos, "0x");
 			/* fall through */
+		case 'X':
 		case 'x':
-			printn(buf, lim, &pos, 16, (long)va_arg(args, int));
+			n = wide ? va_arg(args, long) : (long)va_arg(args, int);
+			printn(buf, lim, &pos, digits, 16, n);
 			break;
 		case 'u':
-			printu(buf, lim, &pos, 10,
-			       (unsigned long)va_arg(args, unsigned int));
+			u = (unsigned long)(wide
+			                   ? va_arg(args, long) : va_arg(args, int));
+			printu(buf, lim, &pos, digits, 10, u);
 			break;
 		case 'o':
+			u = (unsigned long)(wide
+			                   ? va_arg(args, long) : va_arg(args, int));
 			printc(buf, lim, &pos, '0');
-			printu(buf, lim, &pos, 8,
-			       (unsigned long)va_arg(args, unsigned int));
+			printu(buf, lim, &pos, digits, 8, n);
 			break;
 		case '%':
 			printc(buf, lim, &pos, '%');
