@@ -123,7 +123,7 @@ int printf(const char *fmt, ...) {
 
 	char buf[PRINT_BUF_MAX] = {0};
 	size_t i = 0;
-	
+
 	vsnprintf(buf, sizeof(buf), fmt, args);
 	while (buf[i])
 		putchar(buf[i++]);
