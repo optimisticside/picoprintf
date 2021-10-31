@@ -7,7 +7,7 @@ int putchar(int);
 
 void printc(char *buf, size_t lim, size_t *pos, int c) {
 	if (*pos < lim - 1)
-	    buf[(*pos)++] = c;
+		buf[(*pos)++] = c;
 	buf[*pos] = '\0';
 }
 
